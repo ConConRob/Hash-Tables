@@ -70,7 +70,7 @@ unsigned int hash(char *str, int max)
  ****/
 BasicHashTable *create_hash_table(int capacity)
 {
-  BasicHashTable *ht;
+  BasicHashTable *ht = malloc(sizeof(BasicHashTable));
   ht->capacity = capacity;
   ht->storage = calloc(capacity, sizeof(Pair*));
   return ht;
@@ -111,6 +111,16 @@ void hash_table_remove(BasicHashTable *ht, char *key)
  ****/
 char *hash_table_retrieve(BasicHashTable *ht, char *key)
 {
+  // look up the hash
+  int index = hash(key, ht->capacity);
+  if(ht->storage[index] != NULL){
+    // check if key matchest for item in that hash
+    if(strcmp(ht->storage[index]->key, key) == 0 ){
+      // has the key
+      return ht->storage[index]->value;
+    }
+  }
+  
   return NULL;
 }
 
@@ -132,17 +142,19 @@ int main(void)
 
   hash_table_insert(ht, "line", "Here today...\n");
 
+  
+
   printf("%s", hash_table_retrieve(ht, "line"));
 
-  hash_table_remove(ht, "line");
+  // hash_table_remove(ht, "line");
 
-  if (hash_table_retrieve(ht, "line") == NULL) {
-    printf("...gone tomorrow. (success)\n");
-  } else {
-    fprintf(stderr, "ERROR: STILL HERE\n");
-  }
+  // if (hash_table_retrieve(ht, "line") == NULL) {
+  //   printf("...gone tomorrow. (success)\n");
+  // } else {
+  //   fprintf(stderr, "ERROR: STILL HERE\n");
+  // }
 
-  destroy_hash_table(ht);
+  // destroy_hash_table(ht);
 
   return 0;
 }
