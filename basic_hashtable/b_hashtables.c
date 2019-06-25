@@ -71,7 +71,8 @@ unsigned int hash(char *str, int max)
 BasicHashTable *create_hash_table(int capacity)
 {
   BasicHashTable *ht;
-
+  ht->capacity = capacity;
+  ht->storage = calloc(capacity, sizeof(Pair*));
   return ht;
 }
 
@@ -84,7 +85,13 @@ BasicHashTable *create_hash_table(int capacity)
  ****/
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
-
+  int index = hash(key, ht->capacity); 
+  Pair* pair = create_pair(key, value);
+  if(ht->storage[index] != NULL){
+    printf("Pair with key \"%s\" was overwritten.", ht->storage[index]->key);
+    free(ht->storage[index]);
+  }
+  ht->storage[index] = pair;
 }
 
 /****
