@@ -101,7 +101,17 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
  ****/
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
-
+// check if that index exists
+  int index = hash(key, ht->capacity);
+  if(ht->storage[index] != NULL){
+    // check if key is a match
+    if(strcmp(ht->storage[index]->key, key) == 0 ){
+      // free up memory
+      free(ht->storage[index]);
+      // point to NULL
+      ht->storage[index] = NULL;
+    }
+  }
 }
 
 /****
@@ -114,7 +124,7 @@ char *hash_table_retrieve(BasicHashTable *ht, char *key)
   // look up the hash
   int index = hash(key, ht->capacity);
   if(ht->storage[index] != NULL){
-    // check if key matchest for item in that hash
+    // check if key match's for item in that hash
     if(strcmp(ht->storage[index]->key, key) == 0 ){
       // has the key
       return ht->storage[index]->value;
