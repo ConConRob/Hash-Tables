@@ -89,7 +89,7 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
   Pair* pair = create_pair(key, value);
   if(ht->storage[index] != NULL){
     printf("Pair with key \"%s\" was overwritten.", ht->storage[index]->key);
-    free(ht->storage[index]);
+    destroy_pair(ht->storage[index]);
   }
   ht->storage[index] = pair;
 }
@@ -107,7 +107,7 @@ void hash_table_remove(BasicHashTable *ht, char *key)
     // check if key is a match
     if(strcmp(ht->storage[index]->key, key) == 0 ){
       // free up memory
-      free(ht->storage[index]);
+      destroy_pair(ht->storage[index]);
       // point to NULL
       ht->storage[index] = NULL;
     }
@@ -141,7 +141,17 @@ char *hash_table_retrieve(BasicHashTable *ht, char *key)
  ****/
 void destroy_hash_table(BasicHashTable *ht)
 {
-
+  // free all pairs
+  for(int i =0; i<ht->capacity; i++){
+    // if pair exists free it
+    if(ht->storage[i] != NULL){
+      free(ht->storage[i]);
+    }
+  }
+  // free storage
+  free(ht->storage);
+  // free table
+  free(ht);
 }
 
 
@@ -156,15 +166,15 @@ int main(void)
 
   printf("%s", hash_table_retrieve(ht, "line"));
 
-  // hash_table_remove(ht, "line");
+  hash_table_remove(ht, "line");
 
-  // if (hash_table_retrieve(ht, "line") == NULL) {
-  //   printf("...gone tomorrow. (success)\n");
-  // } else {
-  //   fprintf(stderr, "ERROR: STILL HERE\n");
-  // }
+  if (hash_table_retrieve(ht, "line") == NULL) {
+    printf("...gone tomorrow. (success)\n");
+  } else {
+    fprintf(stderr, "ERROR: STILL HERE\n");
+  }
 
-  // destroy_hash_table(ht);
+  destroy_hash_table(ht);
 
   return 0;
 }
